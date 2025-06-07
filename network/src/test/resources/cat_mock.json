@@ -1,0 +1,44 @@
+[
+  {
+    "id": "Hylo4Snaf",
+    "url": "https://cdn.thedogapi.com/images/Hylo4Snaf.jpeg",
+    "width": 1200,
+    "height": 922,
+    "mime_type": "image/jpeg",
+    "breeds": [
+      {
+        "id": "235",
+        "name": "Spanish Water Dog",
+        "weight": {
+          "imperial": "5 - 10",
+          "metric": "2 - 5"
+        },
+        "height": null,
+        "life_span": "12 to 15 years",
+        "breed_group": "Sporting"
+      }
+    ],
+    "categories": []
+  },
+  {
+    "id": "Hylo4Snaf",
+    "url": "https://cdn.thedogapi.com/images/Hylo4Snaf.jpeg",
+    "width": 1200,
+    "height": 922,
+    "mime_type": "image/jpeg",
+    "breeds": [
+      {
+        "id": "235",
+        "name": "Spanish Water Dog",
+        "weight": {
+          "imperial": "5 - 10",
+          "metric": "2 - 5"
+        },
+        "height": null,
+        "life_span": "12 to 15 years",
+        "breed_group": "Sporting"
+      }
+    ],
+    "categories": []
+  }
+]
