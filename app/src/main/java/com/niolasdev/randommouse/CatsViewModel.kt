@@ -3,6 +3,7 @@ package com.niolasdev.randommouse
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.niolasdev.randommouse.CatListState.*
 import com.niolasdev.randommouse.data.Cat
 import com.niolasdev.randommouse.domain.CatResult
 import com.niolasdev.randommouse.domain.ICatRepository
@@ -30,13 +31,22 @@ class CatsViewModel @Inject constructor(
             delay(1000)
             val res = catRepository.getCats()
             _state.value = when (res) {
-                is CatResult.Error -> {
+                is CatResult.Error<*> -> {
                     Log.d("MURLO", res.e?.message ?: "something went wrong")
-                    CatListState.Error(res.e?.message ?: "")
+                    Error(res.e?.message ?: "")
                 }
-                is CatResult.Success -> {
+                is CatResult.Success<List<Cat>> -> {
                     Log.d("MURLO", res.data.toString())
-                    CatListState.Data(res.data)
+                    Data(res.data)
+                }
+
+                is CatResult.InProgress<*> -> {
+                    Log.d("MURLO", "loading in progress")
+                    CatListState.Loading
+                }
+
+                else -> {
+                    CatListState.Loading
                 }
             }
         }

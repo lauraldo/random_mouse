@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2f14cedd435daf3db918b9e335984807",
+    "identityHash": "fb31aee8fb777cb438184b83fa058a98",
     "entities": [
       {
         "tableName": "cat",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `catId` TEXT NOT NULL, `url` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `catId` TEXT NOT NULL, `url` TEXT NOT NULL, `breeds` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -25,95 +25,10 @@
             "columnName": "url",
             "affinity": "TEXT",
             "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        }
-      },
-      {
-        "tableName": "cats_with_breeds",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `catId` INTEGER NOT NULL, `breedId` INTEGER NOT NULL)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
-            "fieldPath": "catId",
-            "columnName": "catId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "breedId",
-            "columnName": "breedId",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": true,
-          "columnNames": [
-            "id"
-          ]
-        }
-      },
-      {
-        "tableName": "breed",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `breed_id` TEXT NOT NULL, `name` TEXT NOT NULL, `temper` TEXT, `lifespan` TEXT, `imperial_w` TEXT, `metric_w` TEXT, `imperial_h` TEXT, `metric_h` TEXT)",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "breedId",
-            "columnName": "breed_id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "temperament",
-            "columnName": "temper",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "lifespan",
-            "columnName": "lifespan",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "imperialWeight",
-            "columnName": "imperial_w",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "metricWeight",
-            "columnName": "metric_w",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "imperialHeight",
-            "columnName": "imperial_h",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "metricHeight",
-            "columnName": "metric_h",
+            "fieldPath": "breeds",
+            "columnName": "breeds",
             "affinity": "TEXT"
           }
         ],
@@ -127,7 +42,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2f14cedd435daf3db918b9e335984807')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fb31aee8fb777cb438184b83fa058a98')"
     ]
   }
 }

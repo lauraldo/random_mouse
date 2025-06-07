@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.niolasdev.storage.dao.CatsDao
+import com.niolasdev.storage.model.BreedConverter
 import com.niolasdev.storage.model.BreedDbo
 import com.niolasdev.storage.model.CatDbo
-import com.niolasdev.storage.model.CatWithBreedsDbo
 
-@Database(entities = [CatDbo::class, CatWithBreedsDbo::class, BreedDbo::class], version = 1)
+@Database(entities = [CatDbo::class], version = 1)
+@TypeConverters(BreedConverter::class)
 internal abstract class CatsRoomDatabase : RoomDatabase() {
 
     abstract fun catsDao(): CatsDao

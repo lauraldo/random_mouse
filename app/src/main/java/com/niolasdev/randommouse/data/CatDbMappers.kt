@@ -21,7 +21,7 @@ class BreedDboMapper : ListMapper<BreedDbo, Breed> {
     override fun from(sources: List<BreedDbo>?): List<Breed> {
         return sources?.map {
             Breed(
-                id = it.breedId,
+                id = it.id,
                 name = it.name,
                 temperament = it.temperament,
             )
