@@ -3,15 +3,18 @@ package com.niolasdev.randommouse
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.niolasdev.randommouse.CatListState.*
+import com.niolasdev.randommouse.CatListState.Data
+import com.niolasdev.randommouse.CatListState.Error
+import com.niolasdev.randommouse.CatListState.Loading
 import com.niolasdev.randommouse.data.Cat
 import com.niolasdev.randommouse.domain.CatResult
 import com.niolasdev.randommouse.domain.ICatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,42 +22,39 @@ import javax.inject.Inject
 class CatsViewModel @Inject constructor(
     private val catRepository: ICatRepository,
     private val appDispatchers: AppDispatchers,
-): ViewModel() {
-
-    private val _state = MutableStateFlow<CatListState>(CatListState.Loading)
+) : ViewModel() {
 
     val uiState: StateFlow<CatListState>
-        get() = _state.asStateFlow()
+        get() = catRepository.getCats().map { res ->
+                when (res) {
+                    is CatResult.Error<*> -> {
+                        Log.d("MURLO", res.e?.message ?: "something went wrong")
+                        Error(res.e?.message ?: "")
+                    }
+
+                    is CatResult.Success<List<Cat>> -> {
+                        Log.d("MURLO", res.data.toString())
+                        Data(res.data)
+                    }
+
+                    is CatResult.InProgress<*> -> {
+                        Log.d("MURLO", "loading in progress")
+                        Loading
+                    }
+                }
+            }.stateIn(viewModelScope, SharingStarted.Lazily, Loading)
 
     fun getCats() {
         viewModelScope.launch(appDispatchers.io) {
             delay(1000)
-            val res = catRepository.getCats()
-            _state.value = when (res) {
-                is CatResult.Error<*> -> {
-                    Log.d("MURLO", res.e?.message ?: "something went wrong")
-                    Error(res.e?.message ?: "")
-                }
-                is CatResult.Success<List<Cat>> -> {
-                    Log.d("MURLO", res.data.toString())
-                    Data(res.data)
-                }
 
-                is CatResult.InProgress<*> -> {
-                    Log.d("MURLO", "loading in progress")
-                    CatListState.Loading
-                }
-
-                else -> {
-                    CatListState.Loading
-                }
-            }
+            catRepository.getCats()
         }
     }
 }
 
 sealed interface CatListState {
-    object Loading: CatListState
-    class Data(val cats: List<Cat>): CatListState
-    class Error(val message: String): CatListState
+    object Loading : CatListState
+    class Data(val cats: List<Cat>) : CatListState
+    class Error(val message: String) : CatListState
 }

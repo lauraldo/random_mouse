@@ -8,8 +8,7 @@
 .cxx
 local.properties
 
-gradle/
-gradle/**
+gradle/wrapper/
 gradlew
 gradlew.bat
 build/

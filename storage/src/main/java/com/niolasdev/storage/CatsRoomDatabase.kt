@@ -7,7 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.niolasdev.storage.dao.CatsDao
 import com.niolasdev.storage.model.BreedConverter
-import com.niolasdev.storage.model.BreedDbo
 import com.niolasdev.storage.model.CatDbo
 
 @Database(entities = [CatDbo::class], version = 1)

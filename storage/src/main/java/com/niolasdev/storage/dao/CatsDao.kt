@@ -18,4 +18,7 @@ interface CatsDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCat(cat: CatDbo): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCats(cats: List<CatDbo>)
 }

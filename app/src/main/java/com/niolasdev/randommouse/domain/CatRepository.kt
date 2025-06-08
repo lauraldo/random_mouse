@@ -3,9 +3,11 @@ package com.niolasdev.randommouse.domain
 import android.util.Log
 import com.niolasdev.network.CatApiService
 import com.niolasdev.network.CatDto
+import com.niolasdev.randommouse.data.BreedDataMapper
 import com.niolasdev.randommouse.data.BreedDboMapper
 import com.niolasdev.randommouse.data.BreedMapper
 import com.niolasdev.randommouse.data.Cat
+import com.niolasdev.randommouse.data.CatDataMapper
 import com.niolasdev.randommouse.data.CatDboMapper
 import com.niolasdev.randommouse.data.CatMapper
 import com.niolasdev.storage.CatsDatabase
@@ -13,6 +15,7 @@ import com.niolasdev.storage.model.CatDbo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -34,12 +37,21 @@ class CatRepository @Inject constructor(
         CatDboMapper(breedDboMapper = BreedDboMapper())
     }
 
-    override suspend fun getCats(): Flow<CatResult<List<Cat>>> {
+    private val catDataMapper : CatDataMapper by lazy {
+        CatDataMapper(breedDataMapper = BreedDataMapper())
+    }
+
+    private val requestResponseMergeStrategy: MergeStrategy<CatResult<List<Cat>>> by lazy {
+        RequestResponseMergeStrategy()
+    }
+
+    override fun getCats(): Flow<CatResult<List<Cat>>> {
         val catsFromDB: Flow<CatResult<List<Cat>>> = getCatsFromDB()
         val catsFromNetwork: Flow<CatResult<List<Cat>>> = getCatsFromNetwork()
 
+
         return catsFromDB
-            // TODO  .combine(catsFromNetwork, requestResponseMergeStrategy::merge)
+            .combine(catsFromNetwork, requestResponseMergeStrategy::merge)
             .flatMapLatest { result ->
                 if (result is CatResult.Success<*>) {
                     database.catsDao.observeAll()
@@ -68,10 +80,17 @@ class CatRepository @Inject constructor(
         }
     }
 
+    private suspend fun saveResponseToDatabase(data: List<CatDto>) {
+        val catsDbo = data.map { dto ->
+            catDataMapper.from(dto)
+        }
+        database.catsDao.insertCats(catsDbo)
+    }
+
     private fun getCatsFromNetwork(): Flow<CatResult<List<Cat>>> {
         val apiRequest = flow { emit(apiService.searchCats()) }
             .onEach { result ->
-                //if (result.isSuccess) saveResponseToDatabase(result.getOrThrow().articles)
+                if (result.isSuccess) saveResponseToDatabase(result.getOrThrow())
             }
             .onEach { result ->
                 when {
@@ -85,10 +104,10 @@ class CatRepository @Inject constructor(
 
                     result.isFailure -> {
                         Log.e("CatRepository", result.exceptionOrNull()?.message ?: "")
-                        CatResult.Error(result.exceptionOrNull())
+                        CatResult.Error(e = result.exceptionOrNull())
                     }
 
-                    else -> CatResult.Error(null)
+                    else -> CatResult.Error(e = null)
                 }
             }
             .map { it.toCatResult() }

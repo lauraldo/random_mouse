@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ICatRepository {
 
-    suspend fun getCats(): Flow<CatResult<List<Cat>>>
+    fun getCats(): Flow<CatResult<List<Cat>>>
 }
