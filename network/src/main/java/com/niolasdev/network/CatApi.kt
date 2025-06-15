@@ -12,7 +12,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 internal fun CatApi(
     baseUrl: String,
     okHttpClient: OkHttpClient? = null,
-    json: Json = Json(Json.Default) {
+    json: Json = Json {
         ignoreUnknownKeys = true
         explicitNulls = false
     }

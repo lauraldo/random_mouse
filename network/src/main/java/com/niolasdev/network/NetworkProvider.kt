@@ -25,7 +25,7 @@ class NetworkProvider() {
 
     companion object {
         const val TIMEOUT_DEFAULT_CONNECT_IN_SECONDS = 20L
-        const val TIMEOUT_DEFAULT_READ_IN_SECONDS = 10L
+        const val TIMEOUT_DEFAULT_READ_IN_SECONDS = 20L
         const val TIMEOUT_DEFAULT_WRITE_IN_SECONDS = 10L
     }
 }
