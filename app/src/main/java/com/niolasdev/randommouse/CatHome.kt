@@ -8,31 +8,32 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.niolasdev.randommouse.ui.theme.MainTheme
 
 @Composable
 fun CatHome(
-    viewModel: CatsViewModel,
+    viewModel: CatsViewModel = hiltViewModel<CatsViewModel>(),
     modifier: Modifier
 ) {
 
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle(
+        initialValue = CatListState.Loading
+    )
 
-    LaunchedEffect(Unit) {
+    CatHome(state, modifier)
+}
 
-//        viewModel.uiState.collectAsState() {
-//
-//        }
-    }
-
-    val uiState = state
-
+@Composable
+internal fun CatHome(
+    uiState: CatListState,
+    modifier: Modifier = Modifier
+) {
     when (uiState) {
         is CatListState.Data -> {
             LazyColumn {
@@ -41,15 +42,15 @@ fun CatHome(
                 }
             }
         }
+
         is CatListState.Error -> {
             ErrorMessage(uiState.message)
         }
+
         CatListState.Loading -> {
             Text("Loading")
         }
     }
-
-
 }
 
 @Composable

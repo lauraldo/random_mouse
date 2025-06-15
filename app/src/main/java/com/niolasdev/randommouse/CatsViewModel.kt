@@ -10,12 +10,10 @@ import com.niolasdev.randommouse.data.Cat
 import com.niolasdev.randommouse.domain.CatResult
 import com.niolasdev.randommouse.domain.ICatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,13 +42,6 @@ class CatsViewModel @Inject constructor(
                 }
             }.stateIn(viewModelScope, SharingStarted.Lazily, Loading)
 
-    fun getCats() {
-        viewModelScope.launch(appDispatchers.io) {
-            delay(1000)
-
-            catRepository.getCats()
-        }
-    }
 }
 
 sealed interface CatListState {

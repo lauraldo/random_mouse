@@ -57,7 +57,7 @@ internal class RequestResponseMergeStrategy<T : Any> : MergeStrategy<CatResult<T
         cache: CatResult.Success<T>,
         server: CatResult.InProgress<T>
     ): CatResult<T> {
-        return CatResult.InProgress()
+        return CatResult.Success(cache.data)
     }
 
     @kotlin.Suppress("UNUSED_PARAMETER")
@@ -65,7 +65,7 @@ internal class RequestResponseMergeStrategy<T : Any> : MergeStrategy<CatResult<T
         cache: CatResult.InProgress<T>,
         server: CatResult.Success<T>
     ): CatResult<T> {
-        return CatResult.InProgress(server.data)
+        return CatResult.Success(server.data)
     }
 
     private fun merge(

@@ -90,7 +90,7 @@ class CatRepository @Inject constructor(
     private fun getCatsFromNetwork(): Flow<CatResult<List<Cat>>> {
         val apiRequest = flow { emit(apiService.searchCats()) }
             .onEach { result ->
-                if (result.isSuccess) saveResponseToDatabase(result.getOrThrow())
+//                if (result.isSuccess) saveResponseToDatabase(result.getOrThrow())
             }
             .onEach { result ->
                 when {
