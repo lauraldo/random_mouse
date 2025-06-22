@@ -11,7 +11,6 @@ import com.niolasdev.randommouse.data.CatDataMapper
 import com.niolasdev.randommouse.data.CatDboMapper
 import com.niolasdev.randommouse.data.CatMapper
 import com.niolasdev.storage.CatsDatabase
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -37,7 +36,6 @@ class CatRepository @Inject constructor(
         CatDataMapper(breedDataMapper = BreedDataMapper())
     }
 
-    private var currentJob: Job? = null
     private val _isRefreshing = MutableStateFlow(false)
 
     // TODO: save fetchTime to DataStore
@@ -52,7 +50,6 @@ class CatRepository @Inject constructor(
 
         try {
             _isRefreshing.value = true
-            currentJob?.cancel()
 
             Log.d(LOG_TAG, "Starting cats fetch")
 
@@ -106,7 +103,6 @@ class CatRepository @Inject constructor(
             emit(CatResult.Error(e = e))
         } finally {
             _isRefreshing.value = false
-            currentJob = null
         }
     }
 
