@@ -11,22 +11,18 @@ import com.niolasdev.randommouse.data.CatDataMapper
 import com.niolasdev.randommouse.data.CatDboMapper
 import com.niolasdev.randommouse.data.CatMapper
 import com.niolasdev.storage.CatsDatabase
-import com.niolasdev.storage.model.CatDbo
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CatRepository @Inject constructor(
     private val apiService: CatApiService,
     private val database: CatsDatabase,
+    private val networkMonitor: NetworkMonitor,
 ) : ICatRepository {
 
     private val catDtoMapper: CatMapper by lazy {
@@ -37,85 +33,94 @@ class CatRepository @Inject constructor(
         CatDboMapper(breedDboMapper = BreedDboMapper())
     }
 
-    private val catDataMapper : CatDataMapper by lazy {
+    private val catDataMapper: CatDataMapper by lazy {
         CatDataMapper(breedDataMapper = BreedDataMapper())
     }
 
-    private val requestResponseMergeStrategy: MergeStrategy<CatResult<List<Cat>>> by lazy {
-        RequestResponseMergeStrategy()
-    }
+    private var currentJob: Job? = null
+    private val _isRefreshing = MutableStateFlow(false)
 
-    override fun getCats(): Flow<CatResult<List<Cat>>> {
-        val catsFromDB: Flow<CatResult<List<Cat>>> = getCatsFromDB()
-        val catsFromNetwork: Flow<CatResult<List<Cat>>> = getCatsFromNetwork()
+    // TODO: save fetchTime to DataStore
+    private var lastFetchTime: Long = 0
+    private val cacheTimeout = 5 * 60 * 1000L // 5 минут
 
+    override fun getCats(): Flow<CatResult<List<Cat>>> = flow {
+        if (_isRefreshing.value) {
+            Log.d(LOG_TAG, "Refresh already in progress, skipping")
+            return@flow
+        }
 
-        return catsFromDB
-            .combine(catsFromNetwork, requestResponseMergeStrategy::merge)
-            .flatMapLatest { result ->
-                if (result is CatResult.Success<*>) {
-                    database.catsDao.observeAll()
-                        .map { catsDBO -> catsDBO.map { catDboMapper.from(it) } }
-                        .map { CatResult.Success(it) }
+        try {
+            _isRefreshing.value = true
+            currentJob?.cancel()
+
+            Log.d(LOG_TAG, "Starting cats fetch")
+
+            // Проверяем сеть
+            if (!networkMonitor.isOnline()) {
+                Log.d(LOG_TAG, "No internet connection, returning cached data")
+                val cachedCats = database.catsDao.getAll()
+                if (cachedCats.isNotEmpty()) {
+                    emit(CatResult.Success(cachedCats.map { catDboMapper.from(it) }))
                 } else {
-                    flowOf(result)
+                    emit(CatResult.Error(e = NetworkError.NoConnection()))
                 }
+                return@flow
             }
-    }
 
-    private fun getCatsFromDB(): Flow<CatResult<List<Cat>>> {
-        val dbRequest =
-            database.catsDao::getAll.asFlow()
-                .map<List<CatDbo>, CatResult<List<CatDbo>>> { CatResult.Success(it) }
-                .catch {
-                    emit(CatResult.Error(e = it))
-                }
-
-        val start = flowOf<CatResult<List<CatDbo>>>(CatResult.InProgress())
-
-        return merge(start, dbRequest).map { result ->
-            result.map { catDBO ->
-                catDBO.map { catDboMapper.from(it) }
+            // Эмитим данные из кэша
+            val cachedCats = database.catsDao.getAll()
+            if (cachedCats.isNotEmpty()) {
+                Log.d(LOG_TAG, "Emitting cached data: ${cachedCats.size} cats")
+                emit(CatResult.Success(cachedCats.map { catDboMapper.from(it) }))
             }
+
+            // Проверяем необходимость обновления
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastFetchTime < cacheTimeout && cachedCats.isNotEmpty()) {
+                Log.d(LOG_TAG, "Cache is still valid, skipping API call")
+                return@flow
+            }
+
+            // Делаем запрос к API
+            Log.d(LOG_TAG, "Making API request")
+            emit(CatResult.InProgress())
+
+            val result = apiService.searchCats()
+            if (result.isSuccess) {
+                val cats = result.getOrThrow()
+                Log.d(LOG_TAG, "API request successful: ${cats.size} cats")
+
+                // Сохраняем в БД
+                saveResponseToDatabase(cats)
+                lastFetchTime = currentTime
+
+                // Эмитим новые данные
+                emit(CatResult.Success(cats.map { catDtoMapper.from(it) }))
+            } else {
+                Log.e(LOG_TAG, "API request failed: ${result.exceptionOrNull()?.message}")
+                emit(CatResult.Error(e = result.exceptionOrNull() ?: NetworkError.UnknownError()))
+            }
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Error in getCats: ${e.message}", e)
+            emit(CatResult.Error(e = e))
+        } finally {
+            _isRefreshing.value = false
+            currentJob = null
         }
     }
 
     private suspend fun saveResponseToDatabase(data: List<CatDto>) {
-        val catsDbo = data.map { dto ->
-            catDataMapper.from(dto)
+        try {
+            val catsDbo = data.map { dto ->
+                catDataMapper.from(dto)
+            }
+            database.catsDao.insertCats(catsDbo)
+            Log.d(LOG_TAG, "Saved ${catsDbo.size} cats to database")
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "Error saving to database: ${e.message}", e)
         }
-        database.catsDao.insertCats(catsDbo)
-    }
-
-    private fun getCatsFromNetwork(): Flow<CatResult<List<Cat>>> {
-        val apiRequest = flow { emit(apiService.searchCats()) }
-            .onEach { result ->
-//                if (result.isSuccess) saveResponseToDatabase(result.getOrThrow())
-            }
-            .onEach { result ->
-                when {
-                    result.isSuccess -> {
-                        val data = result.getOrNull()?.map {
-                            catDtoMapper.from(it)
-                        } ?: emptyList<Cat>()
-
-                        CatResult.Success(data)
-                    }
-
-                    result.isFailure -> {
-                        Log.e("CatRepository", result.exceptionOrNull()?.message ?: "")
-                        CatResult.Error(e = result.exceptionOrNull())
-                    }
-
-                    else -> CatResult.Error(e = null)
-                }
-            }
-            .map { it.toCatResult() }
-
-        val start = flowOf<CatResult<List<CatDto>>>(CatResult.InProgress())
-        return merge(apiRequest, start)
-            .map { result ->
-                result.map { response -> response.map { catDtoMapper.from(it) } }
-            }
     }
 }
+
+private const val LOG_TAG = "CatRepository"

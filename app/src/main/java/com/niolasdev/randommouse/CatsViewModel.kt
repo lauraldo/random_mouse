@@ -10,8 +10,10 @@ import com.niolasdev.randommouse.data.Cat
 import com.niolasdev.randommouse.domain.CatResult
 import com.niolasdev.randommouse.domain.ICatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -19,30 +21,43 @@ import javax.inject.Inject
 @HiltViewModel
 class CatsViewModel @Inject constructor(
     private val catRepository: ICatRepository,
-    private val appDispatchers: AppDispatchers,
 ) : ViewModel() {
 
-    val uiState: StateFlow<CatListState>
-        get() = catRepository.getCats().map { res ->
-                when (res) {
-                    is CatResult.Error<*> -> {
-                        Log.d("MURLO", res.e?.message ?: "something went wrong")
-                        Error(res.e?.message ?: "")
-                    }
-
-                    is CatResult.Success<List<Cat>> -> {
-                        Log.d("MURLO", res.data.toString())
-                        Data(res.data)
-                    }
-
-                    is CatResult.InProgress<*> -> {
-                        Log.d("MURLO", "loading in progress")
-                        Loading
-                    }
+    private val _refreshTrigger = MutableStateFlow(0)
+    
+    val uiState: StateFlow<CatListState> = _refreshTrigger
+        .flatMapLatest { 
+            catRepository.getCats()
+        }
+        .map { res ->
+            when (res) {
+                is CatResult.Error<*> -> {
+                    Log.d(LOG_TAG, "Error: ${res.e?.message ?: "Unknown error"}")
+                    Error(res.e?.message ?: "Unknown error")
                 }
-            }.stateIn(viewModelScope, SharingStarted.Lazily, Loading)
+                is CatResult.Success<List<Cat>> -> {
+                    Log.d(LOG_TAG, "Success: ${res.data.size} cats loaded")
+                    Data(res.data)
+                }
+                is CatResult.InProgress<*> -> {
+                    Log.d(LOG_TAG, "Loading in progress")
+                    Loading
+                }
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = Loading
+        )
 
+    fun refresh() {
+        Log.d(LOG_TAG, "Refreshing cats data")
+        _refreshTrigger.value = _refreshTrigger.value + 1
+    }
 }
+
+private const val LOG_TAG = "CatsViewModel"
 
 sealed interface CatListState {
     object Loading : CatListState
