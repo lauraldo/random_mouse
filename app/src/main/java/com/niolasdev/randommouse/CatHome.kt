@@ -13,8 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.niolasdev.randommouse.data.Breed
+import androidx.navigation.NavController
 import com.niolasdev.randommouse.data.Cat
+import com.niolasdev.randommouse.ui.navigation.Screen
 import com.niolasdev.randommouse.ui.theme.RandomMouseTheme
 import com.niolasdev.randommouse.ui.widget.CatErrorState
 import com.niolasdev.randommouse.ui.widget.CatList
@@ -22,16 +23,26 @@ import com.niolasdev.randommouse.ui.widget.CatLoadingAnimation
 
 @Composable
 fun CatHome(
-    viewModel: CatsViewModel = hiltViewModel<CatsViewModel>(),
+    viewModel: CatsViewModel,
+    navController: NavController,
     modifier: Modifier
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle(
         initialValue = CatListState.Loading
     )
 
+    val selectedCat by viewModel.selectedCat.collectAsStateWithLifecycle()
+
+    selectedCat?.let {
+        navController.navigate(Screen.Details)
+    }
+
     CatHome(
         state = state,
         onRefresh = { viewModel.refresh() },
+        onCatClick = { cat ->
+            viewModel.selectCat(cat)
+        },
         modifier = modifier
     )
 }
@@ -41,6 +52,7 @@ fun CatHome(
 internal fun CatHome(
     state: CatListState,
     onRefresh: () -> Unit,
+    onCatClick: (Cat) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -66,6 +78,7 @@ internal fun CatHome(
                     CatList(
                         cats = currentState.cats,
                         isLoading = false,
+                        onCatClick = onCatClick,
                         onRefresh = { onRefresh() }
                     )
                 }

@@ -26,6 +26,7 @@ class BreedDboMapper : ListMapper<BreedDbo, Breed> {
             Breed(
                 id = it.id,
                 name = it.name,
+                description = "",
                 temperament = it.temperament,
             )
         } ?: emptyList()

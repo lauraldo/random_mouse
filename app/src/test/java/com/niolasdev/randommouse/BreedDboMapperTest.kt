@@ -14,24 +14,20 @@ class BreedDboMapperTest {
     fun `from should map list of BreedDbo to list of Breed`() {
         val dbos = listOf(
             BreedDbo(
-                breedId = "id1",
+                id = "id1",
                 name = "Persian",
                 temperament = "Calm",
-                lifespan = null,
-                imperialWeight = null,
-                metricWeight = null,
-                imperialHeight = null,
-                metricHeight = null,
+                lifeSpan = null,
+                weight = null,
+                height = null,
             ),
             BreedDbo(
-                breedId = "id2",
+                id = "id2",
                 name = "Bengal",
                 temperament = "Active",
-                lifespan = null,
-                imperialWeight = null,
-                metricWeight = null,
-                imperialHeight = null,
-                metricHeight = null,
+                lifeSpan = null,
+                weight = null,
+                height = null,
             ),
         )
 

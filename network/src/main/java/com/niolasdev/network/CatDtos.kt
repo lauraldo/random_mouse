@@ -14,6 +14,7 @@ class BreedDto(
     val id: String,
     val name: String,
     val temperament: String?,
+    val description: String?,
     val life_span: String?,
     val weight: WeightDto?,
     val height: HeightDto?

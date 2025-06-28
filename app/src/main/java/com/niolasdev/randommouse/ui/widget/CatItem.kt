@@ -1,5 +1,6 @@
 package com.niolasdev.randommouse.ui.widget
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,12 +40,16 @@ import com.niolasdev.randommouse.ui.theme.RandomMouseTheme
 @Composable
 fun CatItem(
     cat: Cat,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Cat) -> Unit = {}
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable {
+                onClick(cat)
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -205,7 +210,7 @@ fun CatItemPreviewWithBreed() {
                 Cat(
                     id = "my_cat",
                     url = "",
-                    breeds = listOf(Breed(id = "my_breed", name = "Stray", temperament = "Playful"))
+                    breeds = listOf(Breed(id = "my_breed", name = "Stray", description = "A simple cat you deserve", temperament = "Playful"))
                 )
         )
     }

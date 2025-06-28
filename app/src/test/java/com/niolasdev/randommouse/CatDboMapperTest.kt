@@ -5,7 +5,6 @@ import com.niolasdev.randommouse.data.BreedDboMapper
 import com.niolasdev.randommouse.data.CatDboMapper
 import com.niolasdev.storage.model.BreedDbo
 import com.niolasdev.storage.model.CatDbo
-import com.niolasdev.storage.model.CatWithBreedsDbo
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -22,22 +21,20 @@ class CatDboMapperTest {
     fun `from should map CatWithBreeds to Cat using BreedDboMapper`() {
         val breedDbos = listOf(
             BreedDbo(
-                breedId = "b1",
+                id = "b1",
                 name = "Siberian",
                 temperament = "Loyal",
-                lifespan = null,
-                imperialWeight = null,
-                metricWeight = null,
-                imperialHeight = null,
-                metricHeight = null,
+                lifeSpan = null,
+                weight = null,
+                height = null,
             )
         )
-        val mappedBreeds = listOf(Breed("b1", "Siberian", "Loyal"))
+        val mappedBreeds = listOf(Breed("b1", "Siberian", "Loyal", description = null))
 
         every { breedDboMapper.from(breedDbos) } returns mappedBreeds
 
-        val catWithBreeds = CatWithBreedsDbo(
-            cat = CatDbo(catId = "c1", url = "https://cat.com/image.jpg"),
+        val catWithBreeds = CatDbo(
+            catId = "c1", url = "https://cat.com/image.jpg",
             breeds = breedDbos
         )
 
@@ -54,9 +51,8 @@ class CatDboMapperTest {
     fun `from should handle null breeds`() {
         every { breedDboMapper.from(null) } returns emptyList()
 
-        val catWithBreeds = CatWithBreedsDbo(
-            cat = CatDbo(catId = "c2", url = "https://example.com/img2.jpg"),
-            breeds = null
+        val catWithBreeds = CatDbo(
+            catId = "c2", url = "https://example.com/img2.jpg", breeds = null
         )
 
         val result = mapper.from(catWithBreeds)

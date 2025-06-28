@@ -11,7 +11,7 @@ class CatModelsTest {
 
     @Test
     fun `Cat constructor sets fields correctly`() {
-        val breed = Breed("abys", "Abyssinian", "Active, Energetic")
+        val breed = Breed("abys", "Abyssinian", "Active, Energetic", DESCRIPTION)
         val cat = Cat("cat123", "https://example.com/cat.jpg", listOf(breed))
 
         assertEquals("cat123", cat.id)
@@ -23,7 +23,7 @@ class CatModelsTest {
 
     @Test
     fun `Breed constructor sets fields correctly`() {
-        val breed = Breed("sibe", "Siberian", "Affectionate, Loyal")
+        val breed = Breed("sibe", "Siberian", "Affectionate, Loyal", DESCRIPTION)
 
         assertEquals("sibe", breed.id)
         assertEquals("Siberian", breed.name)
@@ -32,7 +32,7 @@ class CatModelsTest {
 
     @Test
     fun `Breed toString returns expected format`() {
-        val breed = Breed("pers", "Persian", "Calm, Quiet")
+        val breed = Breed("pers", "Persian", "Calm, Quiet", DESCRIPTION)
         val expected = "pers; Persian; Calm, Quiet"
 
         assertEquals(expected, breed.toString())
@@ -40,8 +40,8 @@ class CatModelsTest {
 
     @Test
     fun `Cat toString returns expected format with breeds`() {
-        val breed1 = Breed("b1", "Bengal", "Wild, Smart")
-        val breed2 = Breed("b2", "Maine Coon", "Gentle Giant")
+        val breed1 = Breed("b1", "Bengal", "Wild, Smart", DESCRIPTION)
+        val breed2 = Breed("b2", "Maine Coon", "Gentle Giant", DESCRIPTION)
         val cat = Cat("cat999", "https://cat.img", listOf(breed1, breed2))
 
         val actual = cat.toString()
@@ -60,3 +60,5 @@ class CatModelsTest {
         assertEquals(expected, cat.toString())
     }
 }
+
+const val DESCRIPTION = "Vibrant, energetic, affectionate and intelligent cat"

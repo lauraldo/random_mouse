@@ -20,11 +20,11 @@ class CatMapperTest {
     @Test
     fun `from should map CatDto to Cat with mapped breeds`() {
         val breedDtoList = listOf(
-            BreedDto("b1", "Siamese", "Smart", "10-12", null, null)
+            BreedDto("b1", "Siamese", "Smart", "10-12", null, null, null)
         )
 
         val mappedBreeds = listOf(
-            Breed("b1", "Siamese", "Smart")
+            Breed("b1", "Siamese", "Smart", null)
         )
 
         every { breedMapper.from(breedDtoList) } returns mappedBreeds

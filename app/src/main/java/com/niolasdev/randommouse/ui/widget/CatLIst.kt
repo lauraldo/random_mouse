@@ -20,6 +20,7 @@ fun CatList(
     cats: List<Cat>,
     isLoading: Boolean,
     onRefresh: () -> Unit,
+    onCatClick: (Cat) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pullRefreshState = rememberPullRefreshState(
@@ -39,7 +40,10 @@ fun CatList(
                     items = cats,
                     key = { cat -> cat.id }
                 ) { cat ->
-                    CatItem(cat = cat)
+                    CatItem(
+                        cat = cat,
+                        onClick = onCatClick,
+                    )
                 }
             }
         }

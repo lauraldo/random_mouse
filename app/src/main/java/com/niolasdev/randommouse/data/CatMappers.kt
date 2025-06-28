@@ -31,6 +31,7 @@ class BreedMapper: ListMapper<BreedDto, Breed> {
             Breed(
                 id = it.id,
                 name = it.name,
+                description = it.description,
                 temperament = it.temperament,
             )
         } ?: emptyList()

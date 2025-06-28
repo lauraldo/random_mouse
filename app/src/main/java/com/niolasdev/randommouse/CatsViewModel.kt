@@ -11,9 +11,11 @@ import com.niolasdev.randommouse.domain.CatResult
 import com.niolasdev.randommouse.domain.ICatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -26,7 +28,11 @@ class CatsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _refreshTrigger = MutableStateFlow(0)
-    
+
+    private val _selectedCat = MutableStateFlow<Cat?>(null)
+
+    val selectedCat: StateFlow<Cat?> = _selectedCat.asStateFlow()
+
     val uiState: StateFlow<CatListState> = _refreshTrigger
         .flatMapLatest { 
             catRepository.getCats()
@@ -56,6 +62,15 @@ class CatsViewModel @Inject constructor(
     fun refresh() {
         Log.d(LOG_TAG, "Refreshing cats data")
         _refreshTrigger.value = _refreshTrigger.value + 1
+    }
+
+    fun selectCat(cat: Cat) {
+        _selectedCat.value = cat
+    }
+
+    fun clearSelectedCat() {
+        Log.d(LOG_TAG, "Clearing selected cat")
+        _selectedCat.value = null
     }
 }
 
