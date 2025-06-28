@@ -21,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.niolasdev.randommouse.ui.theme.RandomMouseTheme
 
 @Composable
 fun CatErrorState(
@@ -51,7 +53,7 @@ fun CatErrorState(
                 .padding(32.dp)
                 .alpha(contentAlpha)
         ) {
-            // Грустный котик
+            // Sad cat
             Text(
                 text = "😿",
                 style = MaterialTheme.typography.displayLarge
@@ -82,5 +84,16 @@ fun CatErrorState(
                 Text("Try Again")
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun CatErrorStatePreview() {
+    RandomMouseTheme {
+        CatErrorState(
+            message = "Something went wrong.",
+            onRetry = {}
+        )
     }
 }

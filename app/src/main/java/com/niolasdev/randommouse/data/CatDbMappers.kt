@@ -17,7 +17,6 @@ class CatDboMapper(
             breeds = breedDboMapper.from(source.breeds)
         )
     }
-
 }
 
 class BreedDboMapper : ListMapper<BreedDbo, Breed> {

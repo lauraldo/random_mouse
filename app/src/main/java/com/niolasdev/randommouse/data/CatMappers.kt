@@ -26,8 +26,8 @@ class CatMapper(
 
 class BreedMapper: ListMapper<BreedDto, Breed> {
 
-    override fun from(dto: List<BreedDto>?): List<Breed> {
-        return dto?.map {
+    override fun from(sources: List<BreedDto>?): List<Breed> {
+        return sources?.map {
             Breed(
                 id = it.id,
                 name = it.name,

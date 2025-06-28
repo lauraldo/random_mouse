@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -50,7 +51,7 @@ fun CatEmptyState(
                 .padding(32.dp)
                 .alpha(contentAlpha)
         ) {
-            // Анимированный котик
+            // Animated cat
             Text(
                 text = "😺",
                 style = MaterialTheme.typography.displayLarge
@@ -82,4 +83,12 @@ fun CatEmptyState(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun CatEmptyStatePreview() {
+    CatEmptyState(
+        onRefresh = {}
+    )
 }

@@ -44,7 +44,7 @@ class NetworkMonitorImpl @Inject constructor(
 
         connectivityManager.registerNetworkCallback(networkRequest, callback)
 
-        // Эмитим текущее состояние
+        // Emit current network state
         trySend(isOnline())
 
         awaitClose {

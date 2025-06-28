@@ -31,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.niolasdev.randommouse.R
+import com.niolasdev.randommouse.data.Breed
 import com.niolasdev.randommouse.data.Cat
 import com.niolasdev.randommouse.ui.theme.RandomMouseTheme
 
@@ -52,7 +54,7 @@ fun CatItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Изображение котика
+            // Cat picture
             CatImage(
                 imageUrl = cat.url,
                 modifier = Modifier.size(80.dp)
@@ -60,7 +62,7 @@ fun CatItem(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Описание котика
+            // Cat description
             CatDescription(
                 cat = cat,
                 modifier = Modifier.weight(1f)
@@ -81,24 +83,6 @@ private fun CatImage(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = "Cat image",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop,
-            onLoading = { isLoading = true },
-            onSuccess = { isLoading = false },
-            onError = {
-                isLoading = false
-                isError = true
-            }
-        )
 
         if (isLoading) {
             Box(
@@ -114,6 +98,29 @@ private fun CatImage(
                 )
             }
         }
+
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .placeholder(R.drawable.cat_placeholder_1)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Cat image",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.FillHeight,
+            onLoading = { isLoading = true },
+            onSuccess = {
+                isLoading = false
+                isError = false
+            },
+            onError = {
+                isLoading = false
+                isError = true
+            }
+        )
 
         if (isError) {
             Box(
@@ -141,7 +148,7 @@ private fun CatDescription(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        // Название породы или ID котика
+        // Breed name or cat id
         Text(
             text = cat.breeds?.firstOrNull()?.name ?: "Cat #${cat.id}",
             style = MaterialTheme.typography.titleMedium,
@@ -150,7 +157,7 @@ private fun CatDescription(
             overflow = TextOverflow.Ellipsis
         )
 
-        // Темперамент или описание
+        // Temperament or standard description placeholder
         Text(
             text = cat.breeds?.firstOrNull()?.temperament?.let { temperament ->
                 if (temperament.length > 100) {
@@ -165,7 +172,7 @@ private fun CatDescription(
             overflow = TextOverflow.Ellipsis
         )
 
-        // ID котика (если есть порода)
+        // Cat ID if available, otherwise nothing
         if (cat.breeds?.isNotEmpty() == true) {
             Text(
                 text = "ID: ${cat.id}",
@@ -183,10 +190,23 @@ fun CatItemPreview() {
         CatItem(
             Cat(
                 id = "my_cat",
-//                url = "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg",
-                url = "https://static.wikia.nocookie.net/stardewvalley/images/e/ec/Cat_3.png",
+                url = "",
                 breeds = listOf()
             )
+        )
+    }
+}
+
+@Preview
+@Composable
+fun CatItemPreviewWithBreed() {
+    RandomMouseTheme {
+        CatItem(
+                Cat(
+                    id = "my_cat",
+                    url = "",
+                    breeds = listOf(Breed(id = "my_breed", name = "Stray", temperament = "Playful"))
+                )
         )
     }
 }

@@ -22,7 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.niolasdev.randommouse.ui.theme.RandomMouseTheme
 
 @Composable
 fun CatLoadingAnimation(
@@ -36,7 +38,7 @@ fun CatLoadingAnimation(
 
     val catAlpha by animateFloatAsState(
         targetValue = if (showCat) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000),
+        animationSpec = tween(durationMillis = 2000),
         label = "cat_alpha"
     )
 
@@ -48,7 +50,7 @@ fun CatLoadingAnimation(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(32.dp)
         ) {
-            // Анимированный котик
+            // Animated cat
             Text(
                 text = "🐱",
                 style = MaterialTheme.typography.displayLarge,
@@ -57,7 +59,7 @@ fun CatLoadingAnimation(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Индикатор загрузки
+            // Loading indicator
             CircularProgressIndicator(
                 modifier = Modifier.size(48.dp),
                 color = MaterialTheme.colorScheme.primary
@@ -65,7 +67,7 @@ fun CatLoadingAnimation(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Текст загрузки
+            // Loading hint
             Text(
                 text = "Loading cats...",
                 style = MaterialTheme.typography.bodyLarge,
@@ -82,5 +84,13 @@ fun CatLoadingAnimation(
                 textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun CatLoadingAnimationPreview() {
+    RandomMouseTheme {
+        CatLoadingAnimation()
     }
 }

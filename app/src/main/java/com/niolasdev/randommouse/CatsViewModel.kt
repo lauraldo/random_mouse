@@ -10,6 +10,7 @@ import com.niolasdev.randommouse.data.Cat
 import com.niolasdev.randommouse.domain.CatResult
 import com.niolasdev.randommouse.domain.ICatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class CatsViewModel @Inject constructor(
     private val catRepository: ICatRepository,

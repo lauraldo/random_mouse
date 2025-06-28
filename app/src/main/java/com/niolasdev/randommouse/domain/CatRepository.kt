@@ -40,7 +40,7 @@ class CatRepository @Inject constructor(
 
     // TODO: save fetchTime to DataStore
     private var lastFetchTime: Long = 0
-    private val cacheTimeout = 5 * 60 * 1000L // 5 минут
+    private val cacheTimeout = 5 * 60 * 1000L // 5 minutes
 
     override fun getCats(): Flow<CatResult<List<Cat>>> = flow {
         if (_isRefreshing.value) {
@@ -53,7 +53,7 @@ class CatRepository @Inject constructor(
 
             Log.d(LOG_TAG, "Starting cats fetch")
 
-            // Проверяем сеть
+            // Checking network
             if (!networkMonitor.isOnline()) {
                 Log.d(LOG_TAG, "No internet connection, returning cached data")
                 val cachedCats = database.catsDao.getAll()
@@ -65,21 +65,21 @@ class CatRepository @Inject constructor(
                 return@flow
             }
 
-            // Эмитим данные из кэша
+            // Emit data from cache
             val cachedCats = database.catsDao.getAll()
             if (cachedCats.isNotEmpty()) {
                 Log.d(LOG_TAG, "Emitting cached data: ${cachedCats.size} cats")
                 emit(CatResult.Success(cachedCats.map { catDboMapper.from(it) }))
             }
 
-            // Проверяем необходимость обновления
+            // Check if we need to update
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastFetchTime < cacheTimeout && cachedCats.isNotEmpty()) {
                 Log.d(LOG_TAG, "Cache is still valid, skipping API call")
                 return@flow
             }
 
-            // Делаем запрос к API
+            // Request API endpoint
             Log.d(LOG_TAG, "Making API request")
             emit(CatResult.InProgress())
 
@@ -88,11 +88,11 @@ class CatRepository @Inject constructor(
                 val cats = result.getOrThrow()
                 Log.d(LOG_TAG, "API request successful: ${cats.size} cats")
 
-                // Сохраняем в БД
+                // Store to database
                 saveResponseToDatabase(cats)
                 lastFetchTime = currentTime
 
-                // Эмитим новые данные
+                // Emit new data from API
                 emit(CatResult.Success(cats.map { catDtoMapper.from(it) }))
             } else {
                 Log.e(LOG_TAG, "API request failed: ${result.exceptionOrNull()?.message}")
