@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.niolasdev.randommouse.data.Cat
@@ -35,6 +34,7 @@ fun CatHome(
 
     selectedCat?.let {
         navController.navigate(Screen.Details)
+        viewModel.clearSelectedCat()
     }
 
     CatHome(
@@ -51,9 +51,9 @@ fun CatHome(
 @Composable
 internal fun CatHome(
     state: CatListState,
+    modifier: Modifier = Modifier,
     onRefresh: () -> Unit,
-    onCatClick: (Cat) -> Unit = {},
-    modifier: Modifier = Modifier
+    onCatClick: (Cat) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
