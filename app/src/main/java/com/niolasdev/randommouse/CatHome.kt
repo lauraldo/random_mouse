@@ -33,7 +33,7 @@ fun CatHome(
     val selectedCat by viewModel.selectedCat.collectAsStateWithLifecycle()
 
     selectedCat?.let {
-        navController.navigate(Screen.Details)
+        navController.navigate(Screen.Details(it.id))
         viewModel.clearSelectedCat()
     }
 

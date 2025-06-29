@@ -3,10 +3,10 @@ package com.niolasdev.randommouse.ui.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Screen {
+sealed interface Screen {
     @Serializable
-    data object Home : Screen()
+    data object Home : Screen
 
     @Serializable
-    data object Details : Screen()
+    data class Details(val catId: String) : Screen
 }

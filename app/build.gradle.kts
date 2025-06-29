@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrainsKotlinSerialization)
-    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
@@ -42,13 +42,13 @@ android {
     }
 }
 
-kapt {
+/*kapt {
     correctErrorTypes = true
     useBuildCache = true
     arguments {
         arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
     }
-}
+}*/
 
 dependencies {
 
@@ -60,6 +60,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material)
     implementation(libs.androidx.material3)
+
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.coil.compose)
 
@@ -73,7 +75,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.dagger.hilt.android)
-    kapt(libs.dagger.hilt.compiler)
+    ksp(libs.dagger.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(project(":network"))

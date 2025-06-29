@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,16 +26,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.niolasdev.randommouse.R
+import com.niolasdev.randommouse.data.Breed
 import com.niolasdev.randommouse.data.Cat
+import com.niolasdev.randommouse.ui.CatDetailState
+import com.niolasdev.randommouse.ui.CatDetailViewModel
+import com.niolasdev.randommouse.ui.theme.RandomMouseTheme
 
 @Composable
-fun CatDetailCard(
-    cat: Cat,
+fun CatDetailScreen(
+    catId: String,
     navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: CatDetailViewModel,
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    CatDetailCard(
+        state = state,
+        modifier = modifier,
+    )
+}
+
+@Composable
+internal fun CatDetailCard(
+    state: CatDetailState,
+//    navController: NavController,
     modifier: Modifier = Modifier,
     onClose: () -> Unit = {},
     onViewMoreDetails: (Cat) -> Unit = {}
@@ -52,78 +75,93 @@ fun CatDetailCard(
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
             shape = RoundedCornerShape(16.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Заголовок с изображением
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(cat.url)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Cat image",
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Column {
-                        Text(
-                            text = cat.breeds?.firstOrNull()?.name ?: "Cat #${cat.id}",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Text(
-                            text = "ID: ${cat.id}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+            when (state) {
+                is CatDetailState.Loading -> {
+                    // TODO Loading
                 }
 
-                // Информация о породе
-                cat.breeds?.firstOrNull()?.let { breed ->
+                is CatDetailState.Error -> {
+                    // TODO Error
+                }
+
+                is CatDetailState.Data -> {
+                    val cat = state.cat
+
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(
-                            text = "Breed Information",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
+                        // Header with image
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(cat.url)
+                                    .placeholder(R.drawable.cat_placeholder_1)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "Cat image",
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                contentScale = ContentScale.FillHeight
+                            )
 
-                        BreedInfoRow("Name", breed.name)
-                        breed.temperament?.let { temperament ->
-                            BreedInfoRow("Temperament", temperament)
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Column {
+                                Text(
+                                    text = cat.breeds?.firstOrNull()?.name ?: "Cat #${cat.id}",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                Text(
+                                    text = "ID: ${cat.id}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
-                    }
-                }
 
-                // Кнопки
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(
-                        onClick = onClose,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Close")
-                    }
+                        // Breed info
+                        cat.breeds?.firstOrNull()?.let { breed ->
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = "Breed Information",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
 
-                    Button(
-                        onClick = { onViewMoreDetails(cat) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("View More Details")
+                                BreedInfoRow("Name", breed.name)
+                                breed.temperament?.let { temperament ->
+                                    BreedInfoRow("Temperament", temperament)
+                                }
+                            }
+                        }
+
+                        // Buttons
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Button(
+                                onClick = onClose,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Close")
+                            }
+
+                            Button(
+                                onClick = { onViewMoreDetails(cat) },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("View More Details")
+                            }
+                        }
                     }
                 }
             }
@@ -154,6 +192,29 @@ private fun BreedInfoRow(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Preview
+@Composable
+fun CatDetailCardPreview() {
+    RandomMouseTheme {
+        CatDetailCard(
+            CatDetailState.Data(
+                cat = Cat(
+                    id = "1",
+                    url = "https://cdn2.thecatapi.com/images/1.jpg",
+                    breeds = listOf(
+                        Breed(
+                            id = "abyss",
+                            name = "Abyssinian",
+                            temperament = "Active, Energetic, Independent, Intelligent, Gentle",
+                            description = "The Abyssinian is easy to care for and a joy to have in your home. They’re affectionate cats and love both people and other animals.",
+                        )
+                    )
+                )
+            )
         )
     }
 }

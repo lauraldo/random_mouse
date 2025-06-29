@@ -10,7 +10,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.niolasdev.randommouse.CatHome
 import com.niolasdev.randommouse.CatsViewModel
-import com.niolasdev.randommouse.ui.widget.CatDetailCard
+import com.niolasdev.randommouse.ui.CatDetailViewModel
+import com.niolasdev.randommouse.ui.widget.CatDetailScreen
 
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -28,24 +29,16 @@ fun NavigationStack(
                 modifier = modifier
             )
         }
-        composable<Screen.Details> {
+        composable<Screen.Details> { backStackEntry ->
 
-            val cat = hiltViewModel<CatsViewModel>().selectedCat.value
+            val details = backStackEntry.toRoute<Screen.Details>()
 
-            cat?.let { detailCat ->
-                CatDetailCard(
-                    cat = detailCat,
-                    modifier = modifier,
-                    navController = navController,
-                )
-            }
-
-            /*val detail: Screen.Details = it.toRoute()
-            CatDetailCard(
-                cat = detail.cat,
-                modifier = modifier,
+            CatDetailScreen(
+                catId = details.catId,
                 navController = navController,
-            )*/
+                modifier = modifier,
+                viewModel = hiltViewModel<CatDetailViewModel>()
+            )
         }
     }
 }
