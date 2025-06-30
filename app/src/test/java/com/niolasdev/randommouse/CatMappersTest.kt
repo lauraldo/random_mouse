@@ -23,6 +23,8 @@ class CatMappersTest {
             every { name } returns "Canadian"
             every { temperament } returns null
             every { description } returns null
+            every { origin } returns null
+            every { country_code } returns null
         }
 
         val catDto = mockk<CatDto>().apply {

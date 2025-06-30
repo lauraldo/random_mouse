@@ -2,6 +2,7 @@ package com.niolasdev.randommouse.data
 
 import com.niolasdev.network.BreedDto
 import com.niolasdev.network.CatDto
+import com.niolasdev.network.FLAG_API_BASE
 import com.niolasdev.storage.model.BreedDbo
 import com.niolasdev.storage.model.CatDbo
 import com.niolasdev.storage.model.HeightDbo
@@ -26,8 +27,10 @@ class BreedDboMapper : ListMapper<BreedDbo, Breed> {
             Breed(
                 id = it.id,
                 name = it.name,
-                description = "",
+                description = it.description,
                 temperament = it.temperament,
+                origin = it.origin,
+                countryFlagUrl = "${FLAG_API_BASE}${it.countryCode}.svg",
             )
         } ?: emptyList()
     }
@@ -55,6 +58,9 @@ class BreedDataMapper : ListMapper<BreedDto, BreedDbo> {
                 name = it.name,
                 temperament = it.temperament,
                 lifeSpan = it.life_span,
+                description = it.description,
+                origin = it.origin,
+                countryCode = it.country_code,
                 weight = WeightDbo(
                     imperial = it.weight?.imperial,
                     metric = it.weight?.metric

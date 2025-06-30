@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.niolasdev.network.FLAG_API_BASE
 import com.niolasdev.randommouse.R
 import com.niolasdev.randommouse.data.Breed
 import com.niolasdev.randommouse.data.Cat
@@ -207,11 +208,20 @@ fun CatItemPreview() {
 fun CatItemPreviewWithBreed() {
     RandomMouseTheme {
         CatItem(
-                Cat(
-                    id = "my_cat",
-                    url = "",
-                    breeds = listOf(Breed(id = "my_breed", name = "Stray", description = "A simple cat you deserve", temperament = "Playful"))
+            Cat(
+                id = "my_cat",
+                url = "",
+                breeds = listOf(
+                    Breed(
+                        id = "my_breed",
+                        name = "Stray",
+                        description = "A simple cat you deserve",
+                        temperament = "Playful",
+                        origin = "Russia",
+                        countryFlagUrl = "${FLAG_API_BASE}RU.svg",
+                    )
                 )
+            )
         )
     }
 }

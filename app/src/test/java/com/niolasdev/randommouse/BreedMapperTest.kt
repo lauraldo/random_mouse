@@ -13,8 +13,8 @@ class BreedMapperTest {
     @Test
     fun `from should map list of BreedDto to list of Breed`() {
         val dtos = listOf(
-            BreedDto("id1", "BreedOne", "Friendly", "", null, null, null),
-            BreedDto("id2", "BreedTwo", "Calm", "", null, null, height = null),
+            BreedDto("id1", "BreedOne", "Friendly", "", null, null, null, null, null),
+            BreedDto("id2", "BreedTwo", "Calm", "", null, null, null, null, null),
         )
 
         val result = mapper.from(dtos)

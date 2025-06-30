@@ -16,6 +16,9 @@ class BreedDbo(
     val name: String,
     val temperament: String?,
     val lifeSpan: String?,
+    val description: String?,
+    val origin: String?,
+    val countryCode: String?,
     val weight: WeightDbo?,
     val height: HeightDbo?
 )

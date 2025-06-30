@@ -21,6 +21,8 @@ class CatDtosTest {
                     temperament = "Friendly",
                     life_span = "12-15",
                     description = "Simple cat",
+                    origin = "Thailand",
+                    country_code = "TH",
                     weight = WeightDto("6-10", "3-5"),
                     height = HeightDto("9-11", "23-28")
                 )
@@ -36,6 +38,8 @@ class CatDtosTest {
         assertEquals(cat.breeds?.get(0)?.name, parsedCat.breeds?.get(0)?.name)
         assertEquals(cat.breeds?.get(0)?.temperament, parsedCat.breeds?.get(0)?.temperament)
         assertEquals(cat.breeds?.get(0)?.description, parsedCat.breeds?.get(0)?.description)
+        assertEquals(cat.breeds?.get(0)?.origin, parsedCat.breeds?.get(0)?.origin)
+        assertEquals(cat.breeds?.get(0)?.country_code, parsedCat.breeds?.get(0)?.country_code)
         assertEquals(cat.breeds?.get(0)?.life_span, parsedCat.breeds?.get(0)?.life_span)
     }
 
@@ -63,6 +67,8 @@ class CatDtosTest {
             description = null,
             temperament = null,
             life_span = null,
+            origin = null,
+            country_code = null,
             weight = null,
             height = null
         )

@@ -20,6 +20,9 @@ class BreedDboMapperTest {
                 lifeSpan = null,
                 weight = null,
                 height = null,
+                description = null,
+                origin = null,
+                countryCode = null,
             ),
             BreedDbo(
                 id = "id2",
@@ -28,6 +31,9 @@ class BreedDboMapperTest {
                 lifeSpan = null,
                 weight = null,
                 height = null,
+                description = null,
+                origin = null,
+                countryCode = null,
             ),
         )
 

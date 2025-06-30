@@ -19,6 +19,8 @@ class Breed(
     val name: String,
     val temperament: String?,
     val description: String?,
+    val origin: String?,
+    val countryFlagUrl: String?,
 ) {
     override fun toString(): String {
         return "$id; $name; $temperament"

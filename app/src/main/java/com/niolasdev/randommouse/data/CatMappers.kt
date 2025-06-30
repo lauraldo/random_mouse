@@ -2,6 +2,7 @@ package com.niolasdev.randommouse.data
 
 import com.niolasdev.network.BreedDto
 import com.niolasdev.network.CatDto
+import com.niolasdev.network.FLAG_API_BASE
 
 interface Mapper<K, V> {
     fun from(source: K): V
@@ -33,6 +34,8 @@ class BreedMapper: ListMapper<BreedDto, Breed> {
                 name = it.name,
                 description = it.description,
                 temperament = it.temperament,
+                origin = it.origin,
+                countryFlagUrl = "${FLAG_API_BASE}${it.country_code}.svg"
             )
         } ?: emptyList()
     }

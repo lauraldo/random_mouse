@@ -2,6 +2,7 @@ package com.niolasdev.randommouse.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.niolasdev.network.FLAG_API_BASE
 import com.niolasdev.randommouse.data.Breed
 import com.niolasdev.randommouse.data.Cat
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,8 @@ class CatDetailViewModel @Inject constructor() : ViewModel() {
                             name = "Abyssinian",
                             temperament = "Active, Energetic, Independent, Intelligent, Gentle",
                             description = "The Abyssinian is easy to care for and a joy to have in your home. They’re affectionate cats and love both people and other animals.",
+                            origin = "Egypt",
+                            countryFlagUrl = "${FLAG_API_BASE}eg.svg",
                         )
                     )
                 )

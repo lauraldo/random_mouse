@@ -31,7 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import com.niolasdev.network.FLAG_API_BASE
 import com.niolasdev.randommouse.R
 import com.niolasdev.randommouse.data.Breed
 import com.niolasdev.randommouse.data.Cat
@@ -140,7 +142,25 @@ internal fun CatDetailCard(
                                 breed.temperament?.let { temperament ->
                                     BreedInfoRow("Temperament", temperament)
                                 }
+                                breed.description?.let { description ->
+                                    BreedInfoRow("Description", description)
+                                }
+                                breed.origin?.let { origin ->
+                                    BreedInfoRow("Origin", origin)
+                                }
                             }
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(breed.countryFlagUrl)
+                                    .decoderFactory(SvgDecoder.Factory())
+                                    .placeholder(R.drawable.flag_placeholder_1)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "Origin country flag",
+                                modifier = Modifier
+                                    .size(48.dp),
+                                contentScale = ContentScale.FillHeight
+                            )
                         }
 
                         // Buttons
@@ -211,6 +231,8 @@ fun CatDetailCardPreview() {
                             name = "Abyssinian",
                             temperament = "Active, Energetic, Independent, Intelligent, Gentle",
                             description = "The Abyssinian is easy to care for and a joy to have in your home. They’re affectionate cats and love both people and other animals.",
+                            origin = "Egypt",
+                            countryFlagUrl = "${FLAG_API_BASE}EG.svg",
                         )
                     )
                 )

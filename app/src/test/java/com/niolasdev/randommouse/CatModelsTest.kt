@@ -11,7 +11,14 @@ class CatModelsTest {
 
     @Test
     fun `Cat constructor sets fields correctly`() {
-        val breed = Breed("abys", "Abyssinian", "Active, Energetic", DESCRIPTION)
+        val breed = Breed(
+            "abys",
+            "Abyssinian",
+            "Active, Energetic",
+            DESCRIPTION,
+            origin = null,
+            countryFlagUrl = null,
+        )
         val cat = Cat("cat123", "https://example.com/cat.jpg", listOf(breed))
 
         assertEquals("cat123", cat.id)
@@ -23,7 +30,14 @@ class CatModelsTest {
 
     @Test
     fun `Breed constructor sets fields correctly`() {
-        val breed = Breed("sibe", "Siberian", "Affectionate, Loyal", DESCRIPTION)
+        val breed = Breed(
+            "sibe",
+            "Siberian",
+            "Affectionate, Loyal",
+            DESCRIPTION,
+            origin = null,
+            countryFlagUrl = null,
+        )
 
         assertEquals("sibe", breed.id)
         assertEquals("Siberian", breed.name)
@@ -32,7 +46,14 @@ class CatModelsTest {
 
     @Test
     fun `Breed toString returns expected format`() {
-        val breed = Breed("pers", "Persian", "Calm, Quiet", DESCRIPTION)
+        val breed = Breed(
+            "pers",
+            "Persian",
+            "Calm, Quiet",
+            DESCRIPTION,
+            origin = null,
+            countryFlagUrl = null,
+        )
         val expected = "pers; Persian; Calm, Quiet"
 
         assertEquals(expected, breed.toString())
@@ -40,8 +61,23 @@ class CatModelsTest {
 
     @Test
     fun `Cat toString returns expected format with breeds`() {
-        val breed1 = Breed("b1", "Bengal", "Wild, Smart", DESCRIPTION)
-        val breed2 = Breed("b2", "Maine Coon", "Gentle Giant", DESCRIPTION)
+        val breed1 =
+            Breed(
+                "b1",
+                "Bengal",
+                "Wild, Smart",
+                DESCRIPTION,
+                origin = null,
+                countryFlagUrl = null
+            )
+        val breed2 = Breed(
+            "b2",
+            "Maine Coon",
+            "Gentle Giant",
+            DESCRIPTION,
+            origin = null,
+            countryFlagUrl = null,
+        )
         val cat = Cat("cat999", "https://cat.img", listOf(breed1, breed2))
 
         val actual = cat.toString()

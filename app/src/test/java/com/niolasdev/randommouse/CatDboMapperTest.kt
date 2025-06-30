@@ -27,9 +27,21 @@ class CatDboMapperTest {
                 lifeSpan = null,
                 weight = null,
                 height = null,
+                origin = null,
+                countryCode = null,
+                description = null,
             )
         )
-        val mappedBreeds = listOf(Breed("b1", "Siberian", "Loyal", description = null))
+        val mappedBreeds = listOf(
+            Breed(
+                "b1",
+                "Siberian",
+                "Loyal",
+                description = null,
+                origin = null,
+                countryFlagUrl = null
+            )
+        )
 
         every { breedDboMapper.from(breedDbos) } returns mappedBreeds
 
