@@ -13,8 +13,6 @@ import io.github.typesafegithub.workflows.actions.actions.SetupJava
 import io.github.typesafegithub.workflows.domain.RunnerType.UbuntuLatest
 import io.github.typesafegithub.workflows.domain.triggers.PullRequest
 import io.github.typesafegithub.workflows.domain.triggers.Push
-import io.github.typesafegithub.workflows.dsl.expressions.Contexts.hashFiles
-import io.github.typesafegithub.workflows.dsl.expressions.Contexts.runner
 import io.github.typesafegithub.workflows.dsl.workflow
 
 workflow(

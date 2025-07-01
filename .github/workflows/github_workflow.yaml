@@ -46,8 +46,8 @@ jobs:
         path: |-
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: 'Github_workflow_main$$Lambda/0x00003fc00179c800@2836374-gradle-Github_workflow_main$$Lambda/0x00003fc00179ca30@78a03662'
-        restore-keys: 'Github_workflow_main$$Lambda/0x00003fc00179cc60@3c2654e-gradle-'
+        key: '${{ runner.os }}-gradle-${{ hashFiles(''**/*.gradle*'', ''**/gradle-wrapper.properties'') }}'
+        restore-keys: '${{ runner.os }}-gradle-'
     - id: 'step-3'
       name: 'Grant execute permission for gradle'
       run: 'chmod +x gradle'
