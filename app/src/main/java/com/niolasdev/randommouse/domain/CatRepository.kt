@@ -106,6 +106,10 @@ class CatRepository @Inject constructor(
         }
     }
 
+    override suspend fun getCatById(catId: String): Cat? {
+        return database.catsDao.getCatById(catId)?.let(catDboMapper::from)
+    }
+
     private suspend fun saveResponseToDatabase(data: List<CatDto>) {
         try {
             val catsDbo = data.map { dto ->

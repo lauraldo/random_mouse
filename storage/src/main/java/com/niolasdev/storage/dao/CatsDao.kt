@@ -16,6 +16,9 @@ interface CatsDao {
     @Query("SELECT * FROM CAT")
     fun observeAll(): Flow<List<CatDbo>>
 
+    @Query("SELECT * FROM cat WHERE catId = :catId LIMIT 1")
+    suspend fun getCatById(catId: String): CatDbo?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCat(cat: CatDbo): Long
 

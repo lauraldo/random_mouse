@@ -1,5 +1,7 @@
 package com.niolasdev.randommouse.data
 
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import com.niolasdev.network.BreedDto
 import com.niolasdev.network.CatDto
 import com.niolasdev.network.FLAG_API_BASE
@@ -14,7 +16,7 @@ interface ListMapper<K, V> {
 
 class CatMapper(
     val breedMapper: BreedMapper,
-): Mapper<CatDto, Cat> {
+) : Mapper<CatDto, Cat> {
 
     override fun from(source: CatDto): Cat {
         return Cat(
@@ -25,7 +27,7 @@ class CatMapper(
     }
 }
 
-class BreedMapper: ListMapper<BreedDto, Breed> {
+class BreedMapper : ListMapper<BreedDto, Breed> {
 
     override fun from(sources: List<BreedDto>?): List<Breed> {
         return sources?.map {
@@ -35,7 +37,7 @@ class BreedMapper: ListMapper<BreedDto, Breed> {
                 description = it.description,
                 temperament = it.temperament,
                 origin = it.origin,
-                countryFlagUrl = "${FLAG_API_BASE}${it.country_code}.svg"
+                countryFlagUrl = "${FLAG_API_BASE}${it.country_code?.toLowerCase(Locale.current)}.svg"
             )
         } ?: emptyList()
     }

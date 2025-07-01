@@ -2,6 +2,7 @@ package com.niolasdev.storage.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 @Entity(tableName = "cat")
 data class CatDbo(
@@ -11,6 +12,7 @@ data class CatDbo(
     val breeds: List<BreedDbo>? = null
 )
 
+@Serializable
 class BreedDbo(
     val id: String,
     val name: String,
@@ -23,11 +25,13 @@ class BreedDbo(
     val height: HeightDbo?
 )
 
+@Serializable
 class WeightDbo(
     val imperial: String?,
     val metric: String?
 )
 
+@Serializable
 class HeightDbo(
     val imperial: String?,
     val metric: String?
