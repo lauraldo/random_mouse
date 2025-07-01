@@ -108,8 +108,8 @@ tasks {
         )
     }
 
-    whenTaskAdded {
-        if (name.startsWith("assemble")) {
+    configureEach {
+        if (name.startsWith("assemble") && state.failure == null) {
             finalizedBy("generateGithubWorkflow")
         }
     }
