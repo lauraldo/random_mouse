@@ -42,10 +42,10 @@ workflow(
                     "~/.gradle/caches",
                     "~/.gradle/wrapper",
                 ),
-                key = "${{ runner.os }}-gradle-${{ hashFiles("**/*.gradle*", "**/gradle-wrapper.properties") }}",
+                key = "\${{ runner.os }}-gradle-\${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}",
                 restoreKeys = listOf(
-                    "${{ runner.os }}-gradle-",
-                )
+                    "\${{ runner.os }}-gradle-"
+                ),
             )
         )
         run(
