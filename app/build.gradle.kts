@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -34,21 +36,17 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17 // version for compiler
         targetCompatibility = JavaVersion.VERSION_17 // bytecode compatibility (run-time)
     }
-    kotlinOptions {
-        jvmTarget = "17"
+
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
+
     buildFeatures {
         compose = true
     }
 }
-
-/*kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-    arguments {
-        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
-    }
-}*/
 
 dependencies {
 
@@ -92,4 +90,27 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+tasks {
+    register<Exec>(name = "checkKotlinInstalled") {
+        description = "Check if Kotlin is installed"
+        commandLine = listOf("which", "kotlinc")
+    }
+
+    register<Exec>(name = "generateGithubWorkflow") {
+        dependsOn("checkKotlinInstalled")
+
+        description = "Generate Github Workflow YAML file from Kotlin Script"
+        workingDir = rootDir
+        commandLine = listOf(
+            "${rootDir}/.github/workflows/github_workflow.main.kts"
+        )
+    }
+
+    whenTaskAdded {
+        if (name.startsWith("assemble")) {
+            finalizedBy("generateGithubWorkflow")
+        }
+    }
 }
