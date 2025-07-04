@@ -1,7 +1,5 @@
 package com.niolasdev.randommouse.data
 
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toLowerCase
 import com.niolasdev.network.BreedDto
 import com.niolasdev.network.CatDto
 import com.niolasdev.network.FLAG_API_BASE
@@ -62,7 +60,7 @@ class BreedDataMapper : ListMapper<BreedDto, BreedDbo> {
                 lifeSpan = it.life_span,
                 description = it.description,
                 origin = it.origin,
-                countryCode = it.country_code?.toLowerCase(Locale.current),
+                countryCode = it.country_code?.lowercase(),
                 weight = WeightDbo(
                     imperial = it.weight?.imperial,
                     metric = it.weight?.metric

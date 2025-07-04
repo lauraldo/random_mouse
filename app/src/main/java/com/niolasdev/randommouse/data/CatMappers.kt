@@ -1,7 +1,5 @@
 package com.niolasdev.randommouse.data
 
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toLowerCase
 import com.niolasdev.network.BreedDto
 import com.niolasdev.network.CatDto
 import com.niolasdev.network.FLAG_API_BASE
@@ -37,7 +35,7 @@ class BreedMapper : ListMapper<BreedDto, Breed> {
                 description = it.description,
                 temperament = it.temperament,
                 origin = it.origin,
-                countryFlagUrl = "${FLAG_API_BASE}${it.country_code?.toLowerCase(Locale.current)}.svg"
+                countryFlagUrl = "${FLAG_API_BASE}${it.country_code?.lowercase()}.svg"
             )
         } ?: emptyList()
     }
