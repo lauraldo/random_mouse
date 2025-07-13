@@ -9,4 +9,5 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.jetbrainsKotlinSerialization) apply false
     alias(libs.plugins.androidx.room) apply false
+    alias(libs.plugins.dropshots) apply false
 }

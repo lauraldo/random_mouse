@@ -3,8 +3,9 @@ agp = "8.6.0"
 kotlin = "2.2.0"
 coreKtx = "1.13.0"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
+junitExt = "1.1.5"
+junitVersion = "1.8.3"
+espressoCore = "3.5.0"
 lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.9.0"
 composeBom = "2025.06.01"
@@ -37,12 +38,14 @@ mockito = "4.0.0"
 coreTesting = "2.1.0"
 hiltCompose = "1.2.0"
 googleGson = "2.12.1"
+dropshots = "0.5.0"
+uiTestJunit4Android = "1.8.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
 
 androidx-compose-junit = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -117,6 +120,9 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockito" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
+dropshots = { module = "com.dropbox.dropshots:dropshots", version.ref = "dropshots" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -128,4 +134,5 @@ androidx-room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+dropshots = { id = "com.dropbox.dropshots", version.ref = "dropshots" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
