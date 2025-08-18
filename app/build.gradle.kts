@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.dropshots)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -85,8 +86,13 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)
+    testImplementation(libs.robolectric)
 
     testImplementation(libs.dropshots)
+
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.rule)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.compose.junit)
