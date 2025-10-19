@@ -69,17 +69,6 @@
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
-# ===== GENERAL ANDROID =====
-# Keep Android components
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Application
--keep public class * extends android.app.Service
--keep public class * extends android.content.BroadcastReceiver
--keep public class * extends android.content.ContentProvider
--keep public class * extends android.preference.Preference
--keep public class * extends android.view.View
--keep public class * extends android.app.Fragment
-
 # Keep native methods
 -keepclasseswithmembernames class * {
     native <methods>;
