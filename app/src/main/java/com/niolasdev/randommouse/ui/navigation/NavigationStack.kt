@@ -7,12 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.niolasdev.randommouse.CatHome
 import com.niolasdev.randommouse.CatsViewModel
 import com.niolasdev.randommouse.ui.CatDetailViewModel
 import com.niolasdev.randommouse.ui.widget.CatDetailScreen
-
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -30,11 +28,7 @@ fun NavigationStack(
             )
         }
         composable<Screen.Details> { backStackEntry ->
-
-            val details = backStackEntry.toRoute<Screen.Details>()
-
             CatDetailScreen(
-                catId = details.catId,
                 navController = navController,
                 modifier = modifier,
                 viewModel = hiltViewModel<CatDetailViewModel>()

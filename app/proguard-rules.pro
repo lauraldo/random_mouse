@@ -48,7 +48,6 @@
 -keep class com.niolasdev.randommouse.CatListState { *; }
 -keep class com.niolasdev.randommouse.ui.CatDetailViewModel { *; }
 -keep class com.niolasdev.randommouse.ui.CatDetailState { *; }
--keep class com.niolasdev.randommouse.ui.CatDetailEvent { *; }
 
 # ===== NETWORK =====
 # Keep network related classes (assuming you have network module)

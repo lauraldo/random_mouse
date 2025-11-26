@@ -1,41 +1,42 @@
 package com.niolasdev.randommouse.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.niolasdev.randommouse.data.Cat
 import com.niolasdev.randommouse.domain.ICatRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class CatDetailViewModel @Inject constructor(
     private val catRepository: ICatRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<CatDetailState>(CatDetailState.Loading)
-    val uiState = _state.asStateFlow()
+    private val catId = savedStateHandle.getStateFlow<String?>("catId", null)
 
-    fun onEvent(event: CatDetailEvent) {
-        when (event) {
-            is CatDetailEvent.CatRequested -> requestCat(event.catId)
-        }
-    }
-
-    private fun requestCat(catId: String) {
-        viewModelScope.launch(viewModelScope.coroutineContext + Dispatchers.IO) {
-            _state.value = catRepository.getCatById(catId = catId)?.let { cat ->
-                CatDetailState.Data(cat)
-            } ?: CatDetailState.Error("Cat not found")
-        }
-    }
-}
-
-sealed interface CatDetailEvent {
-    class CatRequested(val catId: String): CatDetailEvent
+    val uiState: StateFlow<CatDetailState> = catId
+        .filterNotNull()
+        .flatMapLatest {
+            flowOf(
+                catRepository.getCatById(catId = it)?.let { cat ->
+                    CatDetailState.Data(cat)
+                } ?: CatDetailState.Error("Cat not found")
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = CatDetailState.Loading
+        )
 }
 
 sealed interface CatDetailState {

@@ -18,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,23 +37,17 @@ import com.niolasdev.network.FLAG_API_BASE
 import com.niolasdev.randommouse.R
 import com.niolasdev.randommouse.data.Breed
 import com.niolasdev.randommouse.data.Cat
-import com.niolasdev.randommouse.ui.CatDetailEvent
 import com.niolasdev.randommouse.ui.CatDetailState
 import com.niolasdev.randommouse.ui.CatDetailViewModel
 import com.niolasdev.randommouse.ui.theme.RandomMouseTheme
 
 @Composable
 fun CatDetailScreen(
-    catId: String,
     navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: CatDetailViewModel,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(CatDetailEvent.CatRequested(catId))
-    }
 
     CatDetailCard(
         state = state,
